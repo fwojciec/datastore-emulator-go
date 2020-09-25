@@ -72,7 +72,8 @@ func (e *Emulator) instanceIsPresent() bool {
 	if projectID == "" {
 		return false
 	}
-	if !e.isHealthy() {
+	// check health of the running instance
+	if err := e.request(host, http.MethodGet); err != nil {
 		return false
 	}
 	e.Host = host
