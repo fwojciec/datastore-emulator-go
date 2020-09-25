@@ -48,7 +48,7 @@ func runTests(ctx context.Context, m *testing.M) (int, error) {
 	}
 	defer client.Close()
 	dc = client
-    e = emulator
+    	e = emulator
 	return m.Run(), nil
 }
 ```
