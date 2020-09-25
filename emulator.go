@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	timeout             = 10 * time.Second
-	pollingRate         = 100 * time.Millisecond
+	timeout             = 5 * time.Second
+	pollingRate         = 200 * time.Millisecond
 	resetEndpoint       = "/reset"
 	shutdownEndpoint    = "/shutdown"
 	healthcheckEndpoint = ""
