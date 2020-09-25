@@ -22,8 +22,8 @@ var (
 
 // Emulator manages the GCP Datastore Emulator process.
 type Emulator struct {
-	host        string
-	projectID   string
+	Host        string
+	ProjectID   string
 	stopOnClose bool
 }
 
@@ -75,8 +75,8 @@ func (e *Emulator) instanceIsPresent() bool {
 	if !e.isHealthy() {
 		return false
 	}
-	e.host = host
-	e.projectID = projectID
+	e.Host = host
+	e.ProjectID = projectID
 	return true
 }
 
@@ -117,8 +117,8 @@ func (e *Emulator) initEnv() error {
 	if err := scanner.Err(); err != nil {
 		return err
 	}
-	e.host = env["DATASTORE_HOST"]
-	e.projectID = env["DATASTORE_PROJECT_ID"]
+	e.Host = env["DATASTORE_HOST"]
+	e.ProjectID = env["DATASTORE_PROJECT_ID"]
 	os.Setenv("DATASTORE_EMULATOR_HOST", env["DATASTORE_EMULATOR_HOST"])
 	os.Setenv("DATASTORE_PROJECT_ID", env["DATASTORE_PROJECT_ID"])
 	return nil
@@ -158,7 +158,7 @@ func (e *Emulator) command(extraArgs ...string) *exec.Cmd {
 func (e *Emulator) request(path, method string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), pollingRate)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, method, e.host+path, nil)
+	req, err := http.NewRequestWithContext(ctx, method, e.Host+path, nil)
 	if err != nil {
 		return err
 	}
