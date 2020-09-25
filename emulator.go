@@ -41,10 +41,10 @@ func New() (*Emulator, error) {
 // If an instance of the emaulator is already running it will be used instead
 // of starting a new instance.
 func (e *Emulator) Start() error {
-	if !e.instanceIsPresent() {
-		e.stopOnClose = true
+	if e.instanceIsPresent() {
 		return nil
 	}
+	e.stopOnClose = true
 	if err := e.command(
 		"start",
 		"--consistency=1.0",  // prevents random test failures
