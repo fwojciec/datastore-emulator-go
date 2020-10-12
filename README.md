@@ -3,8 +3,7 @@
 ## Description
 This is a simple library which helps with testing GCP Datastore code written in
 Go. The library wraps the
-[https://cloud.google.com/datastore/docs/tools/datastore-emulator](Datastore
-emulator) and provides basic functionality such as starting/stopping and
+[Datastore emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator) and provides basic functionality such as starting/stopping and
 reseting the emulator instance from inside the test runner.
 
 ## Example TestMain
@@ -49,7 +48,7 @@ func runTests(ctx context.Context, m *testing.M) (int, error) {
 	}
 	defer client.Close()
 	dc = client
-    e = emulator
+    	e = emulator
 	return m.Run(), nil
 }
 ```
