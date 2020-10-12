@@ -63,6 +63,12 @@ func (e *Emulator) Start() error {
 	return nil
 }
 
+// Reset resets the Datastore Emulator (but only works in testing/i.e. when
+// using in-memory storage).
+func (e *Emulator) Reset() error {
+	return e.request(resetEndpoint, http.MethodPost)
+}
+
 func (e *Emulator) instanceIsPresent() bool {
 	host := os.Getenv("DATASTORE_HOST")
 	if host == "" {
@@ -79,12 +85,6 @@ func (e *Emulator) instanceIsPresent() bool {
 	e.Host = host
 	e.ProjectID = projectID
 	return true
-}
-
-// Reset resets the Datastore Emulator (but only works in testing/i.e. when
-// using in-memory storage).
-func (e *Emulator) Reset() error {
-	return e.request(resetEndpoint, http.MethodPost)
 }
 
 // Close terminates the emulator process and cleans up the environemental
