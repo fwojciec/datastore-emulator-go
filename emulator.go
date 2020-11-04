@@ -50,11 +50,11 @@ func (e *Emulator) Start() error {
 	).Start(); err != nil {
 		return err
 	}
-	if err := e.confirmStartup(); err != nil {
+	if err := e.initEnv(); err != nil {
 		_ = e.Close()
 		return err
 	}
-	if err := e.initEnv(); err != nil {
+	if err := e.confirmStartup(); err != nil {
 		_ = e.Close()
 		return err
 	}
