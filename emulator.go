@@ -1,14 +1,11 @@
 package emulator
 
 import (
-	"bufio"
-	"bytes"
 	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"os/exec"
-	"strings"
 	"time"
 )
 
@@ -49,14 +46,15 @@ func (e *Emulator) Start() error {
 		"start",
 		"--consistency=1.0",  // prevents random test failures
 		"--no-store-on-disk", // test in memory
+		"--host-port=localhost:8088",
 	).Start(); err != nil {
 		return err
 	}
-	if err := e.initEnv(); err != nil {
+	if err := e.confirmStartup(); err != nil {
 		_ = e.Close()
 		return err
 	}
-	if err := e.confirmStartup(); err != nil {
+	if err := e.initEnv(); err != nil {
 		_ = e.Close()
 		return err
 	}
@@ -102,26 +100,10 @@ func (e *Emulator) Close() error {
 }
 
 func (e *Emulator) initEnv() error {
-	var buf bytes.Buffer
-	cmd := e.command("env-init")
-	cmd.Stdout = &buf
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	env := make(map[string]string, 5)
-	scanner := bufio.NewScanner(&buf)
-	for scanner.Scan() {
-		line := scanner.Text()
-		e := strings.Split(strings.Split(line, " ")[1], "=")
-		env[e[0]] = e[1]
-	}
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-	e.Host = env["DATASTORE_HOST"]
-	e.ProjectID = env["DATASTORE_PROJECT_ID"]
-	os.Setenv("DATASTORE_EMULATOR_HOST", env["DATASTORE_EMULATOR_HOST"])
-	os.Setenv("DATASTORE_PROJECT_ID", env["DATASTORE_PROJECT_ID"])
+	e.Host = "http://localhost:8088"
+	e.ProjectID = "test"
+	os.Setenv("DATASTORE_EMULATOR_HOST", "localhost:8088")
+	os.Setenv("DATASTORE_PROJECT_ID", "test")
 	return nil
 }
 
