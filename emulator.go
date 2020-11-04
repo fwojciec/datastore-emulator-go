@@ -15,6 +15,8 @@ var (
 	resetEndpoint       = "/reset"
 	shutdownEndpoint    = "/shutdown"
 	healthcheckEndpoint = ""
+	defaultProject      = "test"
+	defaultHost         = "localhost:8088"
 )
 
 // Emulator manages the GCP Datastore Emulator process.
@@ -44,20 +46,21 @@ func (e *Emulator) Start() error {
 	e.stopOnClose = true
 	if err := e.command(
 		"start",
-		"--consistency=1.0",  // prevents random test failures
-		"--no-store-on-disk", // test in memory
-		"--host-port=localhost:8088",
+		"--consistency=1.0",         // prevents random test failures
+		"--no-store-on-disk",        // test in memory
+		"--host-port="+defaultHost,  // use a specific port
+		"--project="+defaultProject, // use a specific project name for tests
 	).Start(); err != nil {
 		return err
 	}
-	if err := e.initEnv(); err != nil {
-		_ = e.Close()
-		return err
-	}
+	e.Host = "http://" + defaultHost
+	e.ProjectID = defaultProject
 	if err := e.confirmStartup(); err != nil {
 		_ = e.Close()
 		return err
 	}
+	os.Setenv("DATASTORE_EMULATOR_HOST", defaultHost)
+	os.Setenv("DATASTORE_PROJECT_ID", defaultProject)
 	return nil
 }
 
@@ -99,12 +102,7 @@ func (e *Emulator) Close() error {
 	return nil
 }
 
-func (e *Emulator) initEnv() error {
-	e.Host = "http://localhost:8088"
-	e.ProjectID = "test"
-	os.Setenv("DATASTORE_EMULATOR_HOST", "localhost:8088")
-	os.Setenv("DATASTORE_PROJECT_ID", "test")
-	return nil
+func (e *Emulator) initEnv() {
 }
 
 func (e *Emulator) isHealthy() bool {
